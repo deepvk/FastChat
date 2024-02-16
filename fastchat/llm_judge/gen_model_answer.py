@@ -187,7 +187,7 @@ def get_model_answers(
                 "choices": choices,
                 "tstamp": time.time(),
             }
-            fout.write(json.dumps(ans_json) + "\n")
+            fout.write(json.dumps(ans_json, ensure_ascii=False) + "\n")
 
 
 def reorg_answer_file(answer_file):
@@ -219,6 +219,7 @@ if __name__ == "__main__":
         "--bench-name",
         type=str,
         default="mt_bench",
+        choices=["mt_bench", "vicuna_bench"],
         help="The name of the benchmark question set.",
     )
     parser.add_argument(

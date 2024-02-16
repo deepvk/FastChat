@@ -180,6 +180,12 @@ if __name__ == "__main__":
         default="data/judge_prompts.jsonl",
         help="The file of judge prompts.",
     )
+    parser.add_argument(
+        "--question_file",
+        type=str,
+        default="question_ru.jsonl",
+        help="The name of the file with questions.",
+    )
     parser.add_argument("--judge-model", type=str, default="gpt-4")
     parser.add_argument("--baseline-model", type=str, default="gpt-3.5-turbo")
     parser.add_argument(
@@ -209,7 +215,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    question_file = f"data/{args.bench_name}/question.jsonl"
+    question_file = f"data/{args.bench_name}/{args.question_file}"
     answer_dir = f"data/{args.bench_name}/model_answer"
     ref_answer_dir = f"data/{args.bench_name}/reference_answer"
 
