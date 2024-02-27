@@ -187,7 +187,7 @@ if __name__ == "__main__":
         default="question_ru.jsonl",
         help="The name of the file with questions.",
     )
-    parser.add_argument("--judge-model", type=str, default="gpt-4")
+    parser.add_argument("--judge-model", type=str, default="gpt-4-turbo-preview")
     parser.add_argument("--baseline-model", type=str, default="gpt-3.5-turbo")
     parser.add_argument(
         "--mode",
