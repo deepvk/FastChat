@@ -663,7 +663,7 @@ class PeftModelAdapter:
         return base_adapter.get_default_conv_template(config.base_model_name_or_path)
 
 
-class DeepvkAdapter(BaseModelAdapter):
+class DeepVKAdapter(BaseModelAdapter):
     def match(self, model_path: str):
         return "deepvk" in model_path.lower()
 
