@@ -3,7 +3,7 @@ import pytest
 from transformers import AutoTokenizer
 from fastchat.model import get_conversation_template
 
-MODEL_PATH = "deepvk/llama-3b-sft"
+MODEL_PATH = # Write the model path here
 FIRST_TURN = "Привет! Как я могу стать исследователем в области машинного обучения?"
 FIRST_ANSWER = "Вам стоит прочитать много книг по этой теме!"
 SECOND_TURN = "А что еще можешь посоветовать?"
