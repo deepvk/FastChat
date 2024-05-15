@@ -70,6 +70,12 @@ api_model_prices = {
 }
 
 
+IAM_TOKEN = os.environ.get("IAM_TOKEN")
+FOLDER_ID = os.environ.get("FOLDER_ID")
+
+YANDEX_POST_URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
+
+
 @dataclasses.dataclass
 class Judge:
     model_name: str
@@ -437,8 +443,67 @@ def chat_completion_openai(model, conv, temperature, max_tokens, api_dict=None):
             prompt_tokens = response.usage.prompt_tokens
             completion_tokens = response.usage.completion_tokens
             break
-        except openai.error.OpenAIError as e:
+        except openai.APIError as e:
             print(type(e), e)
+            time.sleep(API_RETRY_SLEEP)
+
+    return output, prompt_tokens, completion_tokens
+
+
+def chat_completion_yandex(model, conv, temperature, max_tokens, api_dict=None):
+    import requests
+
+    messages = conv.to_openai_api_messages()
+    for reply in messages:  # Rename key name for compatibility with yandex api
+        reply["text"] = reply.pop("content")
+
+    # The prompt.json content
+    data = {
+        "modelUri": f"gpt://{FOLDER_ID}/{model}/latest",
+        "completionOptions": {
+            "stream": False,
+            "temperature": temperature,
+            "maxTokens": max_tokens
+        },
+        "messages": messages
+    }
+
+    # Set up the headers
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {IAM_TOKEN}",
+        "x-folder-id": FOLDER_ID
+    }
+
+    output: str = API_ERROR_OUTPUT
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+
+    while True:
+        try:
+            response = requests.post(YANDEX_POST_URL, headers=headers, json=data)
+
+            response.raise_for_status()
+            response_json = response.json()
+
+            output = response_json["result"]["alternatives"][0]["message"]["text"]
+
+            prompt_tokens = response_json["result"]["usage"]["inputTextTokens"]
+            completion_tokens = response_json["result"]["usage"]["completionTokens"]
+
+            time.sleep(1)
+
+            break
+        except requests.exceptions.HTTPError as http_err:
+            print(http_err)
+            print(f"HTTP error occurred: {repr(http_err)}, code: {http_err.response.status_code}")
+            time.sleep(API_RETRY_SLEEP)
+
+            if http_err.response.status_code == 429:
+                print(f"Sleep for {API_RETRY_SLEEP} seconds...")
+                time.sleep(API_RETRY_SLEEP)
+        except Exception as e:
+            print(type(e), repr(e))
             time.sleep(API_RETRY_SLEEP)
 
     return output, prompt_tokens, completion_tokens

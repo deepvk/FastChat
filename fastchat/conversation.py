@@ -485,6 +485,18 @@ register_conv_template(
 
 register_conv_template(
     Conversation(
+        name="yandexgpt-lite",
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="yandexgpt",
+    )
+)
+
+register_conv_template(
+    Conversation(
         name="huggingface",
         roles=("User", "Assistant"),
         sep_style=SeparatorStyle.HF_TEMPLATE
