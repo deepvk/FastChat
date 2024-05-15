@@ -219,7 +219,7 @@ if __name__ == "__main__":
         "--bench-name",
         type=str,
         default="mt_bench",
-        choices=["mt_bench", "vicuna_bench"],
+        choices=["mt_bench", "vicuna_bench", "vk_bench"],
         help="The name of the benchmark question set.",
     )
     parser.add_argument(

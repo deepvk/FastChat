@@ -173,6 +173,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--bench-name",
+        choices=["mt_bench", "vicuna_bench", "vk_bench"],
         type=str,
         default="mt_bench",
         help="The name of the benchmark question set.",
